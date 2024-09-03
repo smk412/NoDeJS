@@ -2,6 +2,8 @@ const http = require("http");
 const express = require("express");
 const app = express();
 const path = require("path");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 //views로부터 ejs 파일을 사용하겠다
 app.set('port', 3000);
@@ -9,22 +11,38 @@ console.log("__dirname: ", __dirname);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// public 디렉토리를 static으로 사용하기 위한 설정
 app.use("/", express,static(path.join(__dirname, "public")));
+app.use(cors());
 
-// ejs 뷰 엔진에서 파라미터 확인
-app.get("/home", (req, res) => {
-    console.log("Get /home 요청 실행");
-    const name = req.query.name;
-    const age = req.query.age;
-    req.app.render("home", {name, age}, (err,html)=> {
-        res.end(html);
-    });
+//POST 요청 시 파라미터를 body에서 사용하기 위한 설정
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+const saramList = [
+    {no:1001, name:"홍길동", dept:"기획부", grade:"부장"},
+    {no:1002, name:"홍길동", dept:"기획부", grade:"부장"},
+    {no:1003, name:"홍길동", dept:"기획부", grade:"부장"}
+];
+let noCnt=1004;
+
+//index.html에서 Ajax 요청 처리
+// 구현하고 Postman으로 테스트 하세요
+app.get("/saram", (req, res) => {
+    console.log("GET - /saram 요청");
+    res.send(saramList);
 });
-
-// 브라우저 body에서 바로 ㅎ출력
-app.get("/home2", (req, res) => {
-    console.log("Get /home 요청 실행");
-    res.send(req.query);
+app.post("/saram", (req, res) => {
+    console.log("POST - /saram 요청");
+    res.send(saramList);
+});
+app.put("/saram", (req, res) => {
+    console.log("PUT - /saram 요청");
+    res.send(saramList);
+});
+app.delete("/saram", (req, res) => {
+    console.log("DELETE - /saram 요청");
+    res.send(saramList);
 });
 
 const server = http.createServer(app);
