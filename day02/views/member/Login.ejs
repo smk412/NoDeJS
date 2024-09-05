@@ -26,5 +26,10 @@
             </table>
         </form>
     </div>
+    <script>
+        const cookieData = decodeURIComponent(document.cookie);
+        const cookieObj = JSON.parse(cookieData.split("j:")[1]);
+        console.log("user name", cookieObj.name);
+    </script>
 </body>
 </html>
